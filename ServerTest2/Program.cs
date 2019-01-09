@@ -64,7 +64,7 @@ namespace ServerTest2
             }
 
 
-            //manually keeps thred into running state
+            //manually keeps thred into running state 
             ManualResetEvent quitEvent = new ManualResetEvent(false);
             try
             {
