@@ -21,7 +21,7 @@ namespace ServerTest2
        //[STAThread]
         public static int Main(string[] args)
         {
-            Console.WriteLine(".Net Core OPC UA Reference Server");
+            Console.WriteLine(".Net Core OPC UA Testing Server");
             bool autoAccept = false;
 
             MyRefServer server = new MyRefServer(autoAccept);
@@ -36,7 +36,6 @@ namespace ServerTest2
     {
         ServerOPC server;
         Task status;
-        //DateTime lastEventTime;
         static bool autoAccept = false;
         static ExitCode exitCode;
 
