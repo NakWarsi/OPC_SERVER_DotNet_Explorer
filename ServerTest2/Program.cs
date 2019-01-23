@@ -1,9 +1,9 @@
-﻿using Opc.Ua;
+﻿using System;
+using Opc.Ua;
 using Opc.Ua.Configuration;
-using System;
+using System.Threading.Tasks;
 using System.Linq;
 using System.Threading;
-using System.Threading.Tasks;
 
 namespace ServerTest2
 {
@@ -18,7 +18,7 @@ namespace ServerTest2
     };
     class Program
     {
-        //[STAThread]
+       //[STAThread]
         public static int Main(string[] args)
         {
             Console.WriteLine(".Net Core OPC UA Testing Server");
@@ -117,7 +117,7 @@ namespace ServerTest2
             await application.Start(server);
 
             //Console.WriteLine("server is running but endpoints are not exposed");       //for testing
-
+            
             //print endpoint info
             var endpoints = application.Server.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
             foreach (var endpoint in endpoints)
@@ -125,5 +125,5 @@ namespace ServerTest2
                 Console.WriteLine(endpoint);
             }
         }
+        }
     }
-}
