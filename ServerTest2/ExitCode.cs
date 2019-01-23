@@ -1,5 +1,6 @@
 ﻿namespace ServerTest2
 {
+    //exit codes to return on status
     public enum ExitCode : int
     {
         Ok = 0,

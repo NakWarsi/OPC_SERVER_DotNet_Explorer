@@ -3,7 +3,7 @@
 
 namespace ServerTest2
 {
-    //exit codes to return on status
+  
     class Program
     {
        //[STAThread]
