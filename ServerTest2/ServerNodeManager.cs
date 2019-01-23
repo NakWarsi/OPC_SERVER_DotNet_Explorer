@@ -73,13 +73,15 @@ namespace ServerTest2
                 try
                 {
 
-                    #region Scalar_Static
+                    #region Scalar
                     FolderState scalarFolder = CreateFolder(root, "Scalar", "Scalar");
                     BaseDataVariableState scalarInstructions = CreateVariable(scalarFolder, "Scalar_Instructions", "Scalar_Instructions", DataTypeIds.String, ValueRanks.Scalar);
                     scalarInstructions.Value = "A library of Read/Write Variables of all supported data-types.";
                     variables.Add(scalarInstructions);
+                    #endregion
 
-                    FolderState staticFolder = CreateFolder(scalarFolder, "Scalar_Static", "Scalar_Static");
+                    #region Scalar_Static
+                    FolderState staticFolder = CreateFolder(root, "Scalar_Static", "Scalar_Static");
                     const string scalarStatic = "Scalar_Static_";
                     variables.Add(CreateVariable(staticFolder, scalarStatic + "Boolean", "Boolean", DataTypeIds.Boolean, ValueRanks.Scalar));
                     variables.Add(CreateVariable(staticFolder, scalarStatic + "Byte", "Byte", DataTypeIds.Byte, ValueRanks.Scalar));
@@ -100,7 +102,7 @@ namespace ServerTest2
 
 
                     #region Scalar_Simulation
-                    FolderState simulationFolder = CreateFolder(scalarFolder, "Scalar_Smulation", "Simulation");
+                    FolderState simulationFolder = CreateFolder(root, "Scalar_Smulation", "Simulation");
                     const string scalarSimulation = "Scalar_Simulation_";
                     CreateDynamicVariable(simulationFolder, scalarSimulation + "Boolean", "Boolean", DataTypeIds.Boolean, ValueRanks.Scalar);
                     CreateDynamicVariable(simulationFolder, scalarSimulation + "Byte", "Byte", DataTypeIds.Byte, ValueRanks.Scalar);
@@ -118,6 +120,7 @@ namespace ServerTest2
                     enabledVariable.Value = m_simulationEnabled;
                     enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
                     #endregion
+                    
 
                 }
                 catch (Exception e)
@@ -126,7 +129,7 @@ namespace ServerTest2
                 }
 
                 AddPredefinedNode(SystemContext, root);
-                m_simulationTimer = new Timer(DoSimulation, null, 1000, 1000);
+                m_simulationTimer = new Timer(DoSimulation, null, 3000, 1000);
             }
         }
 
