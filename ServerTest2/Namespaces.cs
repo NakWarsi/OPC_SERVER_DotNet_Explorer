@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-
-namespace ServerTest2
+﻿namespace ServerTest2
 {
     public static partial class Namespaces
     {
