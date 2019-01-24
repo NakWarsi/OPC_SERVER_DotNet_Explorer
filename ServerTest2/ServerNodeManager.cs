@@ -9,8 +9,6 @@ namespace ServerTest2
 {
     internal class ServerNodeManager : CustomNodeManager2
     {
-        //private IServerInternal server;
-        //private ApplicationConfiguration configuration;
         #region Private Fields
         private readonly ServerTestConfiguration m_configuration;
         private List<BaseDataVariableState> m_dynamicNodes;
@@ -24,9 +22,9 @@ namespace ServerTest2
         :
             base(server, configuration, Namespaces.NodeTest)
         {
-            //Console.WriteLine("into Server Node Manager");
-            SystemContext.NodeIdFactory = this;
 
+            SystemContext.NodeIdFactory = this;
+            
             // get the configuration for the node manager.
             m_configuration = configuration.ParseExtension<ServerTestConfiguration>();
 
@@ -37,14 +35,11 @@ namespace ServerTest2
             }
             m_dynamicNodes = new List<BaseDataVariableState>();
         }
-
-            
+     
         public override NodeId New(ISystemContext context, NodeState node)
         {
-
             if (node is BaseInstanceState instance && instance.Parent != null)
             {
-
                 if (instance.Parent.NodeId.Identifier is string id)
                 {
                     return new NodeId(id + "_" + instance.SymbolicName, instance.Parent.NodeId.NamespaceIndex);
@@ -52,9 +47,7 @@ namespace ServerTest2
             }
             return node.NodeId;
         }
-
-       
-
+        
         // any initialization required before the address space can be used.
         public override void CreateAddressSpace(IDictionary<NodeId, IList<IReference>> externalReferences)
         {
@@ -100,7 +93,6 @@ namespace ServerTest2
                     variables.Add(decimalVariable);
                     #endregion
 
-
                     #region Scalar_Simulation
                     FolderState simulationFolder = CreateFolder(root, "Scalar_Smulation", "Simulation");
                     const string scalarSimulation = "Scalar_Simulation_";
@@ -110,8 +102,7 @@ namespace ServerTest2
                     CreateDynamicVariable(simulationFolder, scalarSimulation + "DateTime", "DateTime", DataTypeIds.DateTime, ValueRanks.Scalar);
                     CreateDynamicVariable(simulationFolder, scalarSimulation + "Double", "Double", DataTypeIds.Double, ValueRanks.Scalar);
                     CreateDynamicVariable(simulationFolder, scalarSimulation + "Duration", "Duration", DataTypeIds.Duration, ValueRanks.Scalar);
-
-
+                    
                     BaseDataVariableState intervalVariable = CreateVariable(simulationFolder, scalarSimulation + "Interval", "Interval", DataTypeIds.UInt16, ValueRanks.Scalar);
                     intervalVariable.Value = m_simulationInterval;
                     intervalVariable.OnSimpleWriteValue = OnWriteInterval;
@@ -120,8 +111,6 @@ namespace ServerTest2
                     enabledVariable.Value = m_simulationEnabled;
                     enabledVariable.OnSimpleWriteValue = OnWriteEnabled;
                     #endregion
-                    
-
                 }
                 catch (Exception e)
                 {
@@ -132,8 +121,7 @@ namespace ServerTest2
                 m_simulationTimer = new Timer(DoSimulation, null, 3000, 1000);
             }
         }
-
-
+        
         // Frees any resources allocated for the address space.
         public override void DeleteAddressSpace()
         {
@@ -153,20 +141,16 @@ namespace ServerTest2
                 {
                     return null;
                 }
-
-
                 if (!PredefinedNodes.TryGetValue(nodeId, out NodeState node))
                 {
                     return null;
                 }
-
                 NodeHandle handle = new NodeHandle
                 {
                     NodeId = nodeId,
                     Node = node,
                     Validated = true
                 };
-
                 return handle;
             }
         }
@@ -182,7 +166,6 @@ namespace ServerTest2
             {
                 return null;
             }
-
             // check if previously validated.
             if (handle.Validated)
             {
@@ -193,8 +176,7 @@ namespace ServerTest2
 
             return null;
         }
-
-
+        
         // Creates a new folder.
         private FolderState CreateFolder(NodeState parent, string path, string name)
         {
@@ -210,7 +192,6 @@ namespace ServerTest2
                 UserWriteMask = AttributeWriteMask.None,
                 EventNotifier = EventNotifiers.None
             };
-
             if (parent != null)
             {
                 parent.AddChild(folder);
@@ -219,6 +200,7 @@ namespace ServerTest2
             return folder;
         }
 
+        //simulate the node attribute values to change it continuously
         private void DoSimulation(object state)
         {
             try
@@ -249,10 +231,8 @@ namespace ServerTest2
                     BoundaryValueFrequency = 0
                 };
             }
-           
             object value = null;
             int retryCount = 0;
-
             while (value == null && retryCount < 10)
             {
                 value = m_generator.GetRandom(variable.DataType, variable.ValueRank, new uint[] { 10 }, Server.TypeTree);
@@ -261,10 +241,8 @@ namespace ServerTest2
             System.Console.WriteLine("into generationg new value   "+ value);
             return value;
         }
-
-                /// <summary>
-        /// Creates a new variable.
-        /// </summary>
+        
+        // Createing a new variable in the node.
         private BaseDataVariableState CreateVariable(NodeState parent, string path, string name, NodeId dataType, int valueRank)
         {
             BaseDataVariableState variable = new BaseDataVariableState(parent)
@@ -295,15 +273,12 @@ namespace ServerTest2
             {
                 variable.ArrayDimensions = new ReadOnlyList<uint>(new List<uint> { 0, 0 });
             }
-
             if (parent != null)
             {
                 parent.AddChild(variable);
             }
-
             return variable;
         }
-
         
         //creating cariable dynamicly( changing value of the variable dynamicly)
         private BaseDataVariableState CreateDynamicVariable(NodeState parent, string path, string name, NodeId dataType, int valueRank)
@@ -312,21 +287,17 @@ namespace ServerTest2
             m_dynamicNodes.Add(variable);
             return variable;
         }
-
-
-
+        
         //writing value on specific intervals
         private ServiceResult OnWriteInterval(ISystemContext context, NodeState node, ref object value)
         {
             try
             {
                 m_simulationInterval = (UInt16)value;
-
                 if (m_simulationEnabled)
                 {
                     m_simulationTimer.Change(100, (int)m_simulationInterval);
                 }
-
                 return ServiceResult.Good;
             }
             catch (Exception e)
@@ -362,6 +333,4 @@ namespace ServerTest2
         }
                 
     }
-
-
 }

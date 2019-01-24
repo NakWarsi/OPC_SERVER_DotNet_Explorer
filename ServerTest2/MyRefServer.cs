@@ -11,21 +11,14 @@ namespace ServerTest2
     {
         ServerOPC server;
         Task status;
-        static bool autoAccept = false;
         static ExitCode exitCode;
-
-        public MyRefServer(bool _autoAccept)
-        {
-            autoAccept = _autoAccept;
-        }
-
         public void Run()
         {
 
             try
             {
                 exitCode = ExitCode.ErrorServerNotStarted;
-                ConsoleSampleServer().Wait();
+                ConsoleSampleServer();
                 Console.WriteLine("Server started. Press Ctrl-C to exit...");
                 exitCode = ExitCode.ErrorServerRunning;
             }
@@ -36,8 +29,7 @@ namespace ServerTest2
                 exitCode = ExitCode.ErrorServerException;
                 return;
             }
-
-
+            
             //manually keeps thred into running state 
             ManualResetEvent quitEvent = new ManualResetEvent(false);
             try
@@ -63,7 +55,7 @@ namespace ServerTest2
                 {
                     // Stop status thread
                     server = null;
-                    status.Wait();
+                    status.Wait();    
                     // Stop server and dispose
                     _server.Stop();
                 }
@@ -74,7 +66,7 @@ namespace ServerTest2
 
         public static ExitCode ExitCode { get => exitCode; }
 
-        private async Task ConsoleSampleServer()
+        private void ConsoleSampleServer()
         {
             // ApplicationInstance.MessageDlg = new ApplicationMessageDlg();
             ApplicationInstance application = new ApplicationInstance
@@ -83,16 +75,12 @@ namespace ServerTest2
                 ApplicationType = ApplicationType.Server,
                 ConfigSectionName = "ServerTest2"
             };
-
             // load the application configuration.
-            ApplicationConfiguration config = await application.LoadApplicationConfiguration(false);
-
-            await application.CheckApplicationInstanceCertificate(false, 0);
+            ApplicationConfiguration config = application.LoadApplicationConfiguration(false).Result;
+            application.CheckApplicationInstanceCertificate(false, 0);
             server = new ServerOPC();
-            await application.Start(server);
-
-            //Console.WriteLine("server is running but endpoints are not exposed");       //for testing
-
+            application.Start(server);
+            
             //print endpoint info
             var endpoints = application.Server.GetEndpoints().Select(e => e.EndpointUrl).Distinct();
             foreach (var endpoint in endpoints)

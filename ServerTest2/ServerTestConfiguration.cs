@@ -11,7 +11,6 @@ namespace ServerTest2
         {
             Initialize();
         }
-
         // Initializes the object during deserialization.
         [OnDeserializing()]
         private void Initialize(StreamingContext context)
@@ -21,8 +20,6 @@ namespace ServerTest2
         // Sets private members to default values.
         private void Initialize()
         {
-
-
         }
     }
 }
