@@ -77,7 +77,11 @@ namespace ServerTest2
             };
             // load the application configuration.
             ApplicationConfiguration config = application.LoadApplicationConfiguration(false).Result;
-            application.CheckApplicationInstanceCertificate(false, 0);
+            bool certOk = application.CheckApplicationInstanceCertificate(false, 0).Result;
+            if (!certOk)
+            {
+                throw new Exception("Application instance certificate invalid!");
+            }
             server = new ServerOPC();
             application.Start(server);
             

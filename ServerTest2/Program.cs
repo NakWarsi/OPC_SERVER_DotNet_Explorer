@@ -4,7 +4,7 @@ namespace ServerTest2
 {  
     class Program
     {
-       //[STAThread]
+       [STAThread]
         public static int Main(string[] args)
         {
             Console.WriteLine(".Net Core OPC UA Testing Server");
