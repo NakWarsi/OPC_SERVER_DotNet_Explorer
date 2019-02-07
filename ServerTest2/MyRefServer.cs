@@ -11,6 +11,7 @@ namespace ServerTest2
     {
         ServerOPC server;
         Task status;
+        static bool autoAccept = false;
         static ExitCode exitCode;
         public void Run()
         {
@@ -66,6 +67,22 @@ namespace ServerTest2
 
         public static ExitCode ExitCode { get => exitCode; }
 
+        private static void CertificateValidator_CertificateValidation(CertificateValidator validator, CertificateValidationEventArgs e)
+        {
+            if (e.Error.StatusCode == StatusCodes.BadCertificateUntrusted)
+            {
+                e.Accept = autoAccept;
+                if (autoAccept)
+                {
+                    Console.WriteLine("Accepted Certificate: {0}", e.Certificate.Subject);
+                }
+                else
+                {
+                    Console.WriteLine("Rejected Certificate: {0}", e.Certificate.Subject);
+                }
+            }
+        }
+
         private void ConsoleSampleServer()
         {
             // ApplicationInstance.MessageDlg = new ApplicationMessageDlg();
@@ -82,6 +99,12 @@ namespace ServerTest2
             {
                 throw new Exception("Application instance certificate invalid!");
             }
+
+            if (!config.SecurityConfiguration.AutoAcceptUntrustedCertificates)
+            {
+                config.CertificateValidator.CertificateValidation += new CertificateValidationEventHandler(CertificateValidator_CertificateValidation);
+            }
+
             server = new ServerOPC();
             application.Start(server);
             
